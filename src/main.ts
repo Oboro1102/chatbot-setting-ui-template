@@ -197,6 +197,9 @@ const oboroPreset = definePreset(Aura, {
           display: flex;
           flex-direction: column;
         }
+        .p-floatlabel:has(input:disabled) label {
+            background-color: var(--p-content-disabled-background) !important;
+}
     `,
         },
         popover: {

@@ -142,12 +142,22 @@ watch(editActive, (value) => {
 
 <template>
   <Button
-    v-tooltip.top="useFor !== 'add' ? `調整 ${botName}` : ''"
+    v-tooltip.top="
+      useFor === 'add' && width < 640
+        ? '建立機器人'
+        : useFor === 'edit'
+          ? `調整 ${botName}`
+          : useFor === 'tune' && width < 640
+            ? '調整機器人'
+            : ''
+    "
     :icon="useFor === 'add' ? 'bi bi-plus-lg' : 'bi bi-gear'"
     :class="[triggerClass, 'whitespace-nowrap'].join(' ').trim()"
-    :label="useFor === 'add' && width >= 640 ? '建立機器人' : ''"
+    :label="
+      width >= 640 ? (useFor === 'add' ? '建立機器人' : useFor === 'tune' ? '調整機器人' : '') : ''
+    "
     text
-    :rounded="useFor !== 'add'"
+    :rounded="['add', 'tune'].includes(useFor)"
     severity="secondary"
     size="small"
     @click="editActive = true"
@@ -155,7 +165,7 @@ watch(editActive, (value) => {
   <Drawer
     v-model:visible="editActive"
     position="right"
-    class="w-full! max-w-2/3 lg:max-w-2/5"
+    class="w-full! max-w-1/5 min-w-75"
     :header="useFor === 'add' ? '建立機器人' : `調整 ${botName}`"
   >
     <div class="mt-2 flex flex-col gap-4">
@@ -165,6 +175,7 @@ watch(editActive, (value) => {
           fluid
           autocomplete="true"
           :invalid="showErrorInfo && validateForm('name')!.length > 0"
+          :disabled="useFor === 'tune'"
           v-model="botData.name"
         />
         <label for="name" class="form__label form__label--whitMessage">

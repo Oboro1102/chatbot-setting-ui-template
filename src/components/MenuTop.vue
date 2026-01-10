@@ -91,7 +91,7 @@ const updatePassword = async () => {
   <header class="flex w-full items-center px-4 pt-2">
     <router-link
       to="/"
-      class="from-main to-sub bg-linear-to-br bg-clip-text text-2xl font-bold text-transparent hover:opacity-75"
+      class="animate text-2xl font-bold text-black hover:animate-[zoom_1s_ease-in-out]"
       >問答機器人建構系統模板</router-link
     >
     <div class="panel ml-auto">
@@ -108,7 +108,7 @@ const updatePassword = async () => {
         :model="systemMenuItems"
         popup
         :pt="{
-          root: { class: 'text-sm' },
+          root: { class: 'text-sm top-14!' },
           itemContent: { class: 'text-[var(--p-button-text-secondary-color)]!' },
         }"
       />

@@ -25,7 +25,6 @@ const getBotList = async (reload: boolean = false) => {
       cache: { override: reload },
     })
     if (result.data) {
-      console.log(result.data.data.bots)
       botList.value = result.data.data.bots
     }
   } catch (error: any) {
@@ -132,7 +131,10 @@ onBeforeMount(() => {
         />
       </div>
       <p v-if="botList.length < 1">目前無已設定好的機器人</p>
-      <div v-else class="grid gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8">
+      <div
+        v-else
+        class="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8"
+      >
         <div
           v-for="{ bot_id, name } in botList"
           :key="bot_id"
@@ -155,7 +157,7 @@ onBeforeMount(() => {
             <FormBot
               v-else
               use-for="edit"
-              :botName="name"
+              :bot-name="name"
               :edit-target-id="bot_id"
               v-model:endEdit="endEdit"
             />
@@ -164,12 +166,12 @@ onBeforeMount(() => {
             <IconBot v-if="activeDeleteMode" use-for="delete" />
             <button
               v-else
-              v-tooltip.top="'啟動機器人'"
+              v-tooltip.top="`啟動 ${name}`"
               type="button"
               @click="
                 router.push({
                   name: 'ChatBotChat',
-                  query: { botID: bot_id, name: name },
+                  query: { botId: bot_id, name: name },
                 })
               "
             >

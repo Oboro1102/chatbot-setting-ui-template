@@ -17,7 +17,8 @@ export const handlers = [
                 id,
                 account,
                 password,
-                bots: []
+                bots: [],
+                messages: []
             })
             return HttpResponse.json({
                 success: true,
@@ -173,4 +174,107 @@ export const handlers = [
             )
         }
     }),
+    http.get('/api/getHistoryList', ({ request }) => {
+        const url = new URL(request.url)
+        const userId = url.searchParams.get('userId')
+        const target = users.filter((item: { id: string | null }) => item.id === userId)[0]
+        if (target) {
+            const { messages } = target
+            return HttpResponse.json({
+                success: true,
+                message: '列表取得成功',
+                data: { messages }
+            }, { status: 200 })
+        } else {
+            return HttpResponse.json(
+                { message: '查無使用者，請確認帳號密碼是否正確，或新註冊會員' },
+                { status: 401 }
+            )
+        }
+    }),
+    http.post('/api/getSpecifyHistory', async ({ request }) => {
+        const data = await request.json()
+        const { userId, botId, chatId } = data as { userId: string, botId: string, chatId: string }
+        const target = users.filter((item: { id: string }) => item.id === userId)[0]?.messages.filter(item => item.chat_id === chatId && item.bot_id === botId)[0]
+        if (target) {
+            return HttpResponse.json({
+                success: true,
+                message: '紀錄取得成功',
+                data: { history: target.history }
+            }, { status: 200 })
+        } else {
+            return HttpResponse.json(
+                { message: '查無使用者，請確認帳號密碼是否正確，或新註冊會員' },
+                { status: 401 }
+            )
+        }
+    }),
+    http.post('/api/deleteSpecifyHistory', async ({ request }) => {
+        const data = await request.json()
+        const { userId, botId, chatId } = data as { userId: string, botId: string, chatId: string }
+        const target = users.filter((item: { id: string }) => item.id === userId)[0]
+        if (target) {
+            const targetMessage = target.messages.findIndex(item => item.chat_id === chatId && item.bot_id === botId)
+            if (targetMessage !== -1) {
+                target.messages.splice(targetMessage, 1)
+                return HttpResponse.json({
+                    success: true,
+                    message: '紀錄刪除成功',
+                }, { status: 200 })
+            }
+        } else {
+            return HttpResponse.json(
+                { message: '查無使用者，請確認帳號密碼是否正確，或新註冊會員' },
+                { status: 401 }
+            )
+        }
+    }),
+    http.post('/api/sendMessage', async ({ request }) => {
+        const data = await request.json()
+        const { userId, botId, chatId, content } = data as { userId: string, botId: string, chatId: string, content: string }
+        const userMsg = {
+            message_id: crypto.randomUUID(),
+            role: 'user',
+            content,
+            timestamp: new Date().toISOString()
+        };
+        const botMsg = {
+            message_id: crypto.randomUUID(),
+            role: 'assistant',
+            content: `這是針對「${content}」的模擬回覆。`,
+            timestamp: new Date().toISOString()
+        };
+        const user = users.filter((item: { id: string }) => item.id === userId)[0]
+        if (user) {
+            const messagesHistory = user.messages.filter(item => item.chat_id === chatId && item.bot_id === botId)[0]
+            if (messagesHistory) {
+                messagesHistory.history.push(userMsg, botMsg)
+                return HttpResponse.json(
+                    {
+                        success: true,
+                        message: '回應成功',
+                        data: { history: messagesHistory.history }
+                    }, { status: 200 }
+                )
+            } else {
+                user.messages.push({
+                    chat_id: chatId,
+                    bot_id: botId,
+                    history: [{ ...userMsg }, { ...botMsg }]
+                })
+                return HttpResponse.json(
+                    {
+                        success: true,
+                        message: '回應成功',
+                        data: { history: [{ ...userMsg }, { ...botMsg }] }
+                    }, { status: 200 }
+                )
+            }
+        } else {
+            return HttpResponse.json(
+                { message: '查無使用者，請確認帳號密碼是否正確，或新註冊會員' },
+                { status: 401 }
+            )
+        }
+    })
 ]

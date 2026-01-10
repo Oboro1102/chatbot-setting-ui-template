@@ -12,7 +12,7 @@ const { showLogo } = toRefs(props)
 
 <template>
   <main
-    class="flex grow flex-col items-center justify-center bg-[url(https://unsplash.com/photos/D_ivYIn4jWw/download?force=true&w=1920)] bg-cover bg-center xl:bg-position-[center_left_-22.5vw]"
+    class="from-sub flex grow flex-col items-center justify-center bg-linear-to-br from-45% to-black to-45%"
   >
     <div
       class="flex w-full grow flex-col items-center justify-center p-4 backdrop-blur-sm xl:ml-auto xl:max-w-screen-sm xl:bg-white 2xl:max-w-3xl"

@@ -34,10 +34,12 @@ const router = createRouter({
   },
 })
 
+const TOKEN_KEY = 'z2y8x4w6v1u9'
+const USER_KEY = 'a7b3c9d1e5f8'
 const isAuthenticated = () => {
-  const token = sessionStorage.getItem('z2y8x4w6v1u9')
-  const user = sessionStorage.getItem('a7b3c9d1e5f8')
-  return token && token.split('-').length >= 3 && user && user.length > 0
+  const token = sessionStorage.getItem(TOKEN_KEY)
+  const user = sessionStorage.getItem(USER_KEY)
+  return !!(token && token.split('-').length >= 3 && user && user.length > 0)
 }
 
 router.beforeEach(async (to) => {
