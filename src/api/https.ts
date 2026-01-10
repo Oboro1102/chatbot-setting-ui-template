@@ -32,7 +32,7 @@ instance.interceptors.response.use(
       const { start } = useTimeoutFn(() => {
         sessionStorage.clear()
         if (!location.pathname.includes('login')) {
-          location.assign('/chatbot-training/login')
+          location.assign('/chatbot-setting-ui-template/login')
         }
       }, 0)
       start()

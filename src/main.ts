@@ -288,7 +288,7 @@ async function enableMocking() {
     return worker.start({
         onUnhandledRequest: 'bypass',
         serviceWorker: {
-            url: '/chatbot-training/mockServiceWorker.js',
+            url: '/chatbot-setting-ui-template/mockServiceWorker.js',
         },
     })
 }

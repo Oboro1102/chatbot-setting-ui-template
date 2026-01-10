@@ -17,7 +17,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  base: '/chatbot-training/',
+  base: '/chatbot-setting-ui-template/',
   build: {
     outDir: 'docs'
   }
